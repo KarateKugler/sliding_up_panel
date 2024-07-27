@@ -260,23 +260,18 @@ class _SlidingUpPanelState extends State<SlidingUpPanel>
           ? Alignment.bottomCenter
           : Alignment.topCenter,
       children: <Widget>[
-        //make the back widget take up the entire back side
-        widget.body != null
-            ? AnimatedBuilder(
-                animation: _ac,
-                builder: (context, child) {
-                  return Positioned(
-                    top: widget.parallaxEnabled ? _getParallax() : 0.0,
-                    child: child ?? SizedBox(),
-                  );
-                },
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: widget.body,
-                ),
-              )
-            : Container(),
+        // Allow the body to size itself naturally
+        if (widget.body != null)
+          AnimatedBuilder(
+            animation: _ac,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, widget.parallaxEnabled ? _getParallax() : 0.0),
+                child: child,
+              );
+            },
+            child: widget.body,
+          ) else Container(),
 
         //the backdrop to overlay on the body
         !widget.backdropEnabled
